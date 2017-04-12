@@ -1,7 +1,7 @@
 {
   "intents": [
     {
-      "intent": "RecommandationIntent"
+      "intent": "RecommendationIntent"
     },
     {
       "intent": "CategoryIntent",

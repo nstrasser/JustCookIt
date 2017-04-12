@@ -1,6 +1,7 @@
 import logging
 from random import randint
 import requests
+from Recipe import *
 
 from flask import Flask, render_template
 from flask_ask import Ask, request, session, question, statement
@@ -12,15 +13,31 @@ logging.getLogger('flask_ask').setLevel(logging.DEBUG)
 
 @ask.launch
 def launch():
-    return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?").reprompt("Can I suggest you any recipe?")
+    return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?").\
+        reprompt("Can I suggest you any recipe?")
 
 
 @ask.intent('RecommendationIntent')
 def recommendation():
-    return question("What kind of dish do you want to make?").reprompt("Sorry, I didn't get what kind of dish you want to make, could you repeat?")
+    return question("What kind of dish do you want to make?").\
+        reprompt("Sorry, I didn't get what kind of dish you want to make, could you repeat?")
 
-@ask.intent('CategoryIntent')
-def chooseCategory():
+@ask.intent('CategoryIntent', mapping={'category': 'Category'})
+def chooseCategory(category):
+    session.attributes['category'] = category
+    return question("Do you have an ingredient you want to use or should I suggest a random one recipe?").\
+        reprompt("Do you have an ingredient you want to use or should I suggest a random one recipe?")
+
+"""
+    list = getRecipeByCategory(category)
+    random_id = randint(0, len(list)-1)
+    recipe = list[random_id]
+    recipe_name = recipe["name"]
+    recipe_ingr = recipe["ingredients"]
+    ingr = ''
+    for ingredient in recipe_ingr:
+        ingr = ingr + ingredient + " "
+    question("The name of the selected recipe is " + recipe_name + " and its ingredients are " + ingr + ". Do you want to continu")."""
 
 
 @ask.intent('StateIngrIntent')
