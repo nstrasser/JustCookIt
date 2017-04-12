@@ -1,0 +1,13 @@
+RecommandationIntent I am looking for a recommendation.
+RecommandationIntent Suggest me something.
+RecommandationIntent Please, suggest me something.
+RecommandationIntent Give me a recommendation.
+
+CategoryIntent I would like a {Category}.
+CategoryIntent Suggest me a {Category}.
+CategoryIntent I am looking for a {Category}.
+
+AddIngredientIntent I would like to add {Indgredient}.
+AddIngredientIntent The meal should include {Indgredient}.
+AddIngredientIntent The recipe should include {Indgredient}.
+AddIngredientIntent I would like to use {Indgredient}.
