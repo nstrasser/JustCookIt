@@ -23,7 +23,7 @@ def recommendation():
         reprompt("Sorry, I didn't get what kind of dish you want to make, could you repeat?")
 
 @ask.intent('CategoryIntent', mapping={'category': 'Category'})
-def chooseCategory(category):
+def getCategory(category):
     session.attributes['category'] = category
     return question("Do you have an ingredient you want to use or should I suggest a random one recipe?").\
         reprompt("Do you have an ingredient you want to use or should I suggest a random one recipe?")
