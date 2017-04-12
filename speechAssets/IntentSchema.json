@@ -1,0 +1,25 @@
+{
+  "intents": [
+    {
+      "intent": "RecommandationIntent"
+    },
+    {
+      "intent": "CategoryIntent",
+      "slots": [
+        {
+          "name": "Category",
+          "type": "LIST_CATEGORIES_DISHES"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}
