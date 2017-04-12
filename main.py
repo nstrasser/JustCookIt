@@ -23,6 +23,7 @@ def recommendation():
 def chooseCategory():
 
 
+@ask.intent('StateIngrIntent')
 
 @ask.intent('AMAZON.NoIntent')
 
