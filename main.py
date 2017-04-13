@@ -22,6 +22,7 @@ def recommendation():
     return question("What kind of dish do you want to make?").\
         reprompt("Sorry, I didn't get what kind of dish you want to make, could you repeat?")
 
+
 @ask.intent('CategoryIntent', mapping={'category': 'Category'})
 def getCategory(category):
     session.attributes['category'] = category
@@ -59,7 +60,6 @@ def specificRecipe(name):
 
 
 @ask.intent('AMAZON.NoIntent')
-
 
 
 @ask.intent('AMAZON.YesIntent')
