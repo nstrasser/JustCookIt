@@ -30,22 +30,24 @@ def get_intro(recipe):
 
 @ask.launch
 def launch():
-    return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?"). \
+    return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?").\
         reprompt("Can I suggest you any recipe?")
 
 
 @ask.intent('RecommendationIntent')
 def recommendation():
     session.attributes['state'] = 'recommendation'
-    return question("What kind of dish do you want to make?"). \
+    return question("What kind of dish do you want to make?").\
         reprompt("Sorry, I didn't get what kind of dish you want to make, could you repeat?")
 
 
 @ask.intent('CategoryIntent', mapping={'category': 'Category'})
 def get_category(category):
     session.attributes['category'] = category
-    return question("Do you have an ingredient you want to use or should I suggest a random one recipe?"). \
-        reprompt("Do you have an ingredient you want to use or should I suggest a random one recipe?")
+    session.attributes['state'] = 'category'
+    cat = "Do you have an ingredient you want to use or should I suggest a random one recipe?"
+    return question(cat).\
+        reprompt(cat)
 
 
 """
@@ -90,11 +92,13 @@ def get_recipe_by_ingrs():
 @ask.intent('SpecificIntent')
 def specific():
     specQ = "Can you tell me the name of the recipe?"
+    session.attributes['state'] = 'specificRecipe'
     return question(specQ).reprompt(specQ)
 
 
 @ask.intent('SpecificNameIntent', mapping={'recipe': 'recipe'})
 def specificRecipe(recipe):
+    session.attributes['state'] = 'recipeIngredients'
     # Handling the case where the name of the recipe being said by the user is not stored in the file used by the app.
     if (getRecipeByName(recipe) == None):
         return statement("Sorry, the recipe " + recipe + " is not one of those available")
