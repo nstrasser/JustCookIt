@@ -4,9 +4,6 @@
       "intent": "RecommendationIntent"
     },
     {
-      "intent": "RandomIntent"
-    },
-    {
       "intent": "CategoryIntent",
       "slots": [
         {
@@ -16,10 +13,13 @@
       ]
     },
     {
+      "intent": "RandomIntent"
+    },
+    {
       "intent": "StateIngrIntent",
       "slots": [
         {
-          "name": "food",
+          "name": "Food",
           "type": "AMAZON.Food"
         }
       ]
@@ -31,19 +31,22 @@
       "intent": "SpecificNameIntent",
       "slots": [
         {
-          "name": "name",
+          "name": "Name",
           "type": "AMAZON.Literal"
         }
       ]
     },
     {
-      "intent": "AMAZON.HelpIntent"
+      "intent": "CheckIntent"
     },
     {
-      "intent": "AMAZON.StopIntent"
-    },
-    {
-      "intent": "AMAZON.CancelIntent"
+      "intent": "StepsIntent",
+      "slots": [
+        {
+          "name": "Recipe",
+          "type": "AMAZON.Literal"
+        }
+      ]
     },
     {
       "intent": "AMAZON.NoIntent"
@@ -53,6 +56,15 @@
     },
     {
       "intent": "AMAZON.NextIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
     }
   ]
 }

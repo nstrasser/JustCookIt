@@ -122,7 +122,7 @@ def check():
     return question(check_ingredients).reprompt(check_ingredients)
 
 
-@ask.intent('StepsIntent')
+@ask.intent('StepsIntent', mapping={'recipe': 'Recipe'})
 def nextStep(recipe):
     if (session.attributes['state'] == 'checkIngredients'):
         steps = getStepsOfRecipe(recipe)
