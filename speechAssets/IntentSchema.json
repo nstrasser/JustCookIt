@@ -4,22 +4,22 @@
       "intent": "RecommendationIntent"
     },
     {
-      "intent": "RandomIntent"
-    },
-    {
       "intent": "CategoryIntent",
       "slots": [
         {
           "name": "Category",
-          "type": "LIST_CATEGORIES_DISHES"
+          "type": "LIST_DISHES_CATEGORIES"
         }
       ]
+    },
+    {
+      "intent": "RandomIntent"
     },
     {
       "intent": "StateIngrIntent",
       "slots": [
         {
-          "name": "food",
+          "name": "Ingredient",
           "type": "AMAZON.Food"
         }
       ]
@@ -31,19 +31,22 @@
       "intent": "SpecificNameIntent",
       "slots": [
         {
-          "name": "name",
-          "type": "AMAZON.Literal"
+          "name": "Name",
+          "type": "AMAZON.LITERAL"
         }
       ]
     },
     {
-      "intent": "AMAZON.HelpIntent"
+      "intent": "CheckIntent"
     },
     {
-      "intent": "AMAZON.StopIntent"
-    },
-    {
-      "intent": "AMAZON.CancelIntent"
+      "intent": "StepsIntent",
+      "slots": [
+        {
+          "name": "Recipe",
+          "type": "AMAZON.LITERAL"
+        }
+      ]
     },
     {
       "intent": "AMAZON.NoIntent"
@@ -53,6 +56,15 @@
     },
     {
       "intent": "AMAZON.NextIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
     }
   ]
 }
