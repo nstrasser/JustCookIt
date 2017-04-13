@@ -4,6 +4,9 @@
       "intent": "RecommendationIntent"
     },
     {
+      "intent": "RandomIntent"
+    },
+    {
       "intent": "CategoryIntent",
       "slots": [
         {

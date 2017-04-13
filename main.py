@@ -45,7 +45,7 @@ def recommendation():
 def get_category(category):
     session.attributes['category'] = category
     session.attributes['state'] = 'category'
-    cat = "Do you have an ingredient you want to use or should I suggest a random one recipe?"
+    cat = "What ingredient do you want to use or should I suggest a random recipe?"
     return question(cat). \
         reprompt(cat)
 

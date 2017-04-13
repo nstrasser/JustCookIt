@@ -27,3 +27,9 @@ SpecificNameIntent The name of the recipe is {Leek Risotto | name}
 SpecificNameIntent The name of the recipe is {Simple Fish Stew | name}
 SpecificNameIntent The name of the recipe is {Courgette, Breadcrumb and Almond Pasta | name}
 SpecificNameIntent The name of the recipe is {Some very very long recipe name | name}
+
+
+RandomIntent Suggest me a random recipe
+RandomIntent Suggest me a random one
+RandomIntent I would like to hear a random one
+RandomIntent Give me a random one
