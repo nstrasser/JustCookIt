@@ -40,7 +40,23 @@ def getCategory(category):
     question("The name of the selected recipe is " + recipe_name + " and its ingredients are " + ingr + ". Do you want to continu")."""
 
 
+# We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
 @ask.intent('StateIngrIntent')
+
+
+@ask.intent('SpecificIntent')
+def specific():
+    specQ = "Can you tell me the name of the recipe?"
+    return question(specQ).reprompt(specQ)
+# We should have something to handle the case where the name of a recipe is said by the user but the recipe is not stored in Just Cook It
+
+# For this intent we need the AMAZON.NUMBER in the intent list on amazon developer. Similar to what we did for hello python app
+@ask.intent('SpecificNameIntent', mapping={'name': 'name'})
+def specificRecipe(name):
+    # session.attributes['name'] = name
+    return statement("You asked me about " + name + "Here are the ingredients you need " + )
+# how do we filter out of our json file just the recipe that the user said the name of and how we can get its ingredients?
+
 
 @ask.intent('AMAZON.NoIntent')
 
@@ -51,6 +67,8 @@ def getCategory(category):
 
 
 @ask.intent('AMAZON.NextIntent')
+
+
 
 @ask.intent('AMAZON.HelpIntent')
 def help():
