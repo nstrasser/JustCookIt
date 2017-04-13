@@ -1,15 +1,15 @@
-RecommandationIntent I am looking for a recommendation.
-RecommandationIntent Suggest me something.
-RecommandationIntent Please, suggest me something.
-RecommandationIntent Give me a recommendation.
-RecommandationIntent I have a specific one.
-RecommandationIntent I would like to go back to one specific recipe.
+RecommendationIntent I am looking for a recommendation.
+RecommendationIntent Suggest me something.
+RecommendationIntent Please, suggest me something.
+RecommendationIntent Give me a recommendation.
+RecommendationIntent I have a specific one.
+RecommendationIntent I would like to go back to one specific recipe.
 
 CategoryIntent I would like a {Category}.
 CategoryIntent Suggest me a {Category}.
 CategoryIntent I am looking for a {Category}.
 
-AddIngredientIntent I would like to add {Indgredient}.
-AddIngredientIntent The meal should include {Indgredient}.
-AddIngredientIntent The recipe should include {Indgredient}.
-AddIngredientIntent I would like to use {Indgredient}.
+AddIngredientIntent I would like to add {Ingredient}.
+AddIngredientIntent The meal should include {Ingredient}.
+AddIngredientIntent The recipe should include {Ingredient}.
+AddIngredientIntent I would like to use {Ingredient}.
