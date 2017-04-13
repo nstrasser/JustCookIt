@@ -81,7 +81,11 @@ def get_random():
 @ask.intent('StateIngrIntent', mapping={'ingredient': 'food'})
 def get_ingr(ingredient):
     session.attributes['state'] = 'ingredient'
-    session.attributes['ingrs'].append({ingredient})
+    #if session.attributes['ingrs'] == None:
+    ingred = []
+    session.attributes['ingrs'] = ingred
+
+    session.attributes['ingrs'].append(ingredient)
     if len(session.attributes['ingrs']) == 3:
         filteredList = get_recipes_by_ingrs()
         randomId = randint(0, len(filteredList) - 1)
@@ -247,5 +251,3 @@ def session_ended():
 # this final statement is required to run the app defined above
 if __name__ == '__main__':
     app.run(debug=True)
-
-

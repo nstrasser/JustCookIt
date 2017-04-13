@@ -6,7 +6,7 @@ RecommendationIntent Give me a recommendation
 CategoryIntent I would like a {Category}
 CategoryIntent Suggest me a {Category}
 CategoryIntent I am looking for a {Category}
-CategoryIntent {Category}, please
+CategoryIntent {Category} please
 CategoryIntent {Category}
 
 StateIngrIntent I would like to add {Ingredient}
@@ -27,7 +27,7 @@ SpecificNameIntent The name of the recipe is {Sweet Potato | Name}
 SpecificNameIntent The name of the recipe is {Chicken | Name}
 SpecificNameIntent The name of the recipe is {Leek Risotto | Name}
 SpecificNameIntent The name of the recipe is {Simple Fish Stew | Name}
-SpecificNameIntent The name of the recipe is {Courgette, Breadcrumb and Almond Pasta | name}
+SpecificNameIntent The name of the recipe is {Courgette Breadcrumb and Almond Pasta | Name}
 SpecificNameIntent The name of the recipe is {Some very very long recipe name | Name}
 
 
@@ -35,6 +35,7 @@ RandomIntent Suggest me a random recipe
 RandomIntent Suggest me a random one
 RandomIntent I would like to hear a random one
 RandomIntent Give me a random one
+RandomIntent Suggest me something
 
 AMAZON.NextIntent look again
 AMAZON.NextIntent try another
