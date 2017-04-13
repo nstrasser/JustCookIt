@@ -35,6 +35,7 @@ RandomIntent Suggest me a random recipe
 RandomIntent Suggest me a random one
 RandomIntent I would like to hear a random one
 RandomIntent Give me a random one
+RandomIntent Suggest me something
 
 AMAZON.NextIntent look again
 AMAZON.NextIntent try another

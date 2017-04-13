@@ -39,7 +39,7 @@ def get_intro(recipe):
     ingr = ''
     for ingredient in recipe_ingr:
         ingr = ingr + ingredient + " "
-    return "The name of this recipe is " + str(recipe_name) + " . Its ingredients are " + ingr;
+    return "The name of this recipe is " + str(recipe_name) + " . Its ingredients are " + ingr
 
 
 @ask.launch
@@ -73,6 +73,7 @@ def get_random():
     random_id = randint(0, len(list_recipes) - 1)
     recipe = list_recipes[random_id]
     session.attributes['recipe'] = recipe
+    print(get_intro(recipe))
     question(get_intro(recipe) + "Do you want to continue with this recipe or hear another one?"). \
         reprompt("Do you want to continue with the recipe for " + recipe['name'] + " or do you want to hear another one?")
 
@@ -81,7 +82,11 @@ def get_random():
 @ask.intent('StateIngrIntent', mapping={'ingredient': 'food'})
 def get_ingr(ingredient):
     session.attributes['state'] = 'ingredient'
-    session.attributes['ingrs'].append({ingredient})
+    #if session.attributes['ingrs'] == None:
+    ingred = []
+    session.attributes['ingrs'] = ingred
+
+    session.attributes['ingrs'].append(ingredient)
     if len(session.attributes['ingrs']) == 3:
         filteredList = get_recipes_by_ingrs()
         randomId = randint(0, len(filteredList) - 1)
@@ -109,7 +114,7 @@ def specific():
     return question(specQ).reprompt(specQ)
 
 # Alexa tells the ingredient needed for the recipe and ask if the user wants to continue with it or choose another one
-@ask.intent('SpecificNameIntent', mapping={'recipe': 'name'})
+@ask.intent('SpecificNameIntent', mapping={'recipe': 'Name'})
 def specificRecipe(recipe):
     session.attributes['state'] = 'recipeIngredients'
     # Handling the case where the name of the recipe being said by the user is not stored in the file used by the app.
