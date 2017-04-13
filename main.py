@@ -6,6 +6,8 @@ from Recipe import *
 from flask import Flask, render_template
 from flask_ask import Ask, request, session, question, statement
 
+from collections import deque
+
 app = Flask(__name__)
 ask = Ask(app, "/")
 logging.getLogger('flask_ask').setLevel(logging.DEBUG)
@@ -18,6 +20,16 @@ def getIngredientsByRecipe(recipe):
     for ingredient in recipe_ingr:
         ingr = ingr + ingredient + " "
     return ingr
+
+def getStepsOfRecipe(recipe):
+    recipe_description = getRecipeByName(recipe)
+    recipe_steps = recipe_description["method"]
+    # Get the string with the method
+    recipe_steps_str = recipe_steps[0]
+    # Split
+    steps = recipe_steps_str.split(". ")
+    # steps = deque(steps)
+    return steps
 
 @ask.launch
 def launch():
@@ -45,7 +57,7 @@ def get_category(category):
     random_id = randint(0, len(list)-1)
     question("The name of the selected recipe is " + recipe_name + " and its ingredients are " + ingr + ". Do you want to continu")."""
 
-
+# We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
 @ask.intent('StateIngrIntent', mapping={'ingredient': 'food'})
 def get_ingr(ingredient):
     session.attributes['ingrs'].append({ingredient})
@@ -63,10 +75,6 @@ def get_ingr(ingredient):
     for ingredient in recipe_ingr:
         ingr = ingr + ingredient + " "
     question("The name of the selected recipe is " + recipe_name + " and its ingredients are " + ingr + ". Do you want to continu")."""
-
-
-# We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
-@ask.intent('StateIngrIntent', mapping={'ingredient': 'Ingredients'})
 
 
 
@@ -89,7 +97,46 @@ def specificRecipe(recipe):
         return question(recipeIntro).reprompt("Do you want to hear the ingredients again?")
 
 
+@ask.intent('CheckIntent')
+def check():
+    session.attributes['state'] = 'checkIngredients'
+    checkIngredients = "Do you have all the ingredients that you need for this recipe?"
+    return question(checkIngredients).reprompt(checkIngredients)
+
+
+@ask.intent('StepsIntent', mapping={'recipe': 'recipe'})
+def nextStep(recipe):
+    if (session.attributes['state'] == 'checkIngredients'):
+        steps = getStepsOfRecipe(recipe)
+        count = 0
+        step = steps[count]
+        session.attributes['recipeSteps'] = steps
+        session.attributes['state'] = 'steps'
+        count = count+1
+        session.attributes['stepNum'] = count
+        return question("Do this: " + step + ". Are you ready for the next step?").reprompt("Are you ready for the next step?")
+
+    elif (session.attributes['state'] == 'steps' and len(session.attributes['recipeSteps']) != 0):
+        steps = session.attributes['recipeSteps']
+        count = session.attributes['stepNum']
+        step = steps[count]
+        session.attributes['recipeSteps'] = steps
+        session.attributes['state'] = 'steps'
+        return question("Now do this: " + step + ". Are you ready for the next step?").reprompt("Are you ready for the next step?")
+
+    elif (session.attributes['state'] == 'steps' and len(session.attributes['recipeSteps']) == 0):
+        return statement("You are done! Your food look delicious") # or should we return stop() ????
+
+    else:
+        # Handle the case in which the Steps intent is not activated in the possible correct states
+        not_steps = "I think this is not the right moment to tell you the steps of the recipe, can I help in another way?"
+        return question(not_steps).reprompt(not_steps)
+
+
+
+
 @ask.intent('AMAZON.NoIntent')
+
 
 
 @ask.intent('AMAZON.YesIntent')
