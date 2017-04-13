@@ -25,7 +25,6 @@ def getStepsOfRecipe(recipe):
     recipe_steps_str = recipe_steps[0]
     # Split
     steps = recipe_steps_str.split(". ")
-    # steps = deque(steps)
     return steps
 
 
@@ -62,10 +61,10 @@ def get_category(category):
 
 @ask.intent('RandomIntent')
 def get_random():
-    list = getRecipeByCategory(session.attributes['category'])
-    random_id = randint(0, len(list) - 1)
-    question(get_intro(list[random_id]) + "Do you want to continue with this recipe or hear another one?"). \
-        reprompt("Do you want to continue with this" + list[random_id]['name'] + " recipe or hear another one?")
+    list_recipes = getRecipeByCategory(session.attributes['category'])
+    random_id = randint(0, len(list_recipes) - 1)
+    question(get_intro(list_recipes[random_id]) + "Do you want to continue with this recipe or hear another one?"). \
+        reprompt("Do you want to continue with the recipe for " + list_recipes[random_id]['name'] + " or do you want to hear another one?")
 
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
 @ask.intent('StateIngrIntent', mapping={'ingredient': 'food'})
@@ -157,11 +156,12 @@ def no():
 
 
 @ask.intent('AMAZON.NextIntent')
-
+def next_recipe():
+    return get_random()
 
 
 @ask.intent('AMAZON.HelpIntent')
-def help():
+def help_recipe():
     help_text = "How can I help you with this recipe?"
     return question(help_text).reprompt(help_text)
 
