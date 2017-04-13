@@ -13,10 +13,10 @@
       ]
     },
     {
-      "intent": "AddIngredientIntent",
+      "intent": "StateIngrIntent",
       "slots": [
         {
-          "name": "Ingredient",
+          "name": "food",
           "type": "AMAZON.Food"
         }
       ]
