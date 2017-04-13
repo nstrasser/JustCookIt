@@ -22,6 +22,18 @@
       ]
     },
     {
+      "intent": "SpecificIntent"
+    },
+    {
+      "intent": "SpecificNameIntent",
+      "slots": [
+        {
+          "name": "name",
+          "type": "AMAZON.Literal"
+        }
+      ]
+    },
+    {
       "intent": "AMAZON.HelpIntent"
     },
     {
@@ -29,6 +41,15 @@
     },
     {
       "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
+    },
+    {
+      "intent": "AMAZON.YesIntent"
+    },
+    {
+      "intent": "AMAZON.NextIntent"
     }
   ]
 }

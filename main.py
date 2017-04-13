@@ -92,7 +92,6 @@ def specificRecipe(recipe):
 @ask.intent('AMAZON.NoIntent')
 
 
-
 @ask.intent('AMAZON.YesIntent')
 
 
