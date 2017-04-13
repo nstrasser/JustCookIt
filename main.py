@@ -1,6 +1,5 @@
 import logging
 from random import randint
-import requests
 from Recipe import *
 
 from flask import Flask, render_template
@@ -18,6 +17,16 @@ def getIngredientsByRecipe(recipe):
     for ingredient in recipe_ingr:
         ingr = ingr + ingredient + " "
     return ingr
+
+
+def get_intro(recipe):
+    recipe_ingr = recipe["ingredients"]
+    recipe_name = recipe['name']
+    ingr = ''
+    for ingredient in recipe_ingr:
+        ingr = ingr + ingredient + " "
+    return "The name of this recipe is " + str(recipe_name) + " . Its ingredients are " + ingr;
+
 
 @ask.launch
 def launch():
@@ -38,6 +47,7 @@ def get_category(category):
     return question("Do you have an ingredient you want to use or should I suggest a random one recipe?"). \
         reprompt("Do you have an ingredient you want to use or should I suggest a random one recipe?")
 
+
 """
     list = getRecipeByCategory(category)
     random_id = randint(0, len(list)-1)
@@ -48,9 +58,21 @@ def get_category(category):
 def get_ingr(ingredient):
     session.attributes['ingrs'].append({ingredient})
     if len(session.attributes['ingrs']) == 3:
-        return statement("")recipe_intro()
-    return question("Do you have another ingredient you want to use?"). \
-        reprompt("Do you have another ingredient you want to use?")
+        filteredList = get_recipe_by_ingrs()
+        randomId = randint(0, len(filteredList) - 1)
+        random_recipe = filteredList[randomId]
+        return question(get_intro(random_recipe) + "Do you want to continue with this recipe?"). \
+            reprompt("Do you want to continue with " + str(random_recipe['name']))
+    return question("What else?"). \
+        reprompt("Please tell me an ingredient?")
+
+
+def get_recipe_by_ingrs():
+    list_ingrs = session.attributes["ingrs"]
+    filteredlist = None
+    for ingr in list_ingrs:
+        filteredlist = getRecipeByIngredient(ingr, filteredlist)
+    return filteredlist
 
 
 """
@@ -65,9 +87,6 @@ def get_ingr(ingredient):
 
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
 @ask.intent('StateIngrIntent', mapping={'ingredient': 'Ingredients'})
-
-
-
 @ask.intent('SpecificIntent')
 def specific():
     specQ = "Can you tell me the name of the recipe?"
@@ -86,17 +105,8 @@ def specificRecipe(recipe):
 
 
 @ask.intent('AMAZON.NoIntent')
-
-
-
 @ask.intent('AMAZON.YesIntent')
-
-
-
 @ask.intent('AMAZON.NextIntent')
-
-
-
 @ask.intent('AMAZON.HelpIntent')
 def help():
     help_text = "How can I help you with this recipe?"
@@ -112,7 +122,6 @@ def stop():
 @ask.intent('AMAZON.CancelIntent')
 def cancel():
     return stop()
-
 
 
 """
@@ -168,6 +177,7 @@ def get_it_fact():
     card_title = render_template('card_title')
     return statement(fact_text).simple_card(card_title, fact_text)
 """
+
 
 @ask.session_ended
 def session_ended():
