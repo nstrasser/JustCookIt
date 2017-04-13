@@ -6,32 +6,54 @@ from Recipe import *
 from flask import Flask, render_template
 from flask_ask import Ask, request, session, question, statement
 
-
 app = Flask(__name__)
 ask = Ask(app, "/")
 logging.getLogger('flask_ask').setLevel(logging.DEBUG)
 
+
+def getIngredientsByRecipe(recipe):
+    recipeDescription = getRecipeByName(recipe)
+    recipe_ingr = recipeDescription["ingredients"]
+    ingr = ''
+    for ingredient in recipe_ingr:
+        ingr = ingr + ingredient + " "
+    return ingr
+
 @ask.launch
 def launch():
-    return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?").\
+    return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?"). \
         reprompt("Can I suggest you any recipe?")
 
 
 @ask.intent('RecommendationIntent')
 def recommendation():
-    return question("What kind of dish do you want to make?").\
+    session.attributes['state'] = 'recommendation'
+    return question("What kind of dish do you want to make?"). \
         reprompt("Sorry, I didn't get what kind of dish you want to make, could you repeat?")
 
 
 @ask.intent('CategoryIntent', mapping={'category': 'Category'})
-def getCategory(category):
+def get_category(category):
     session.attributes['category'] = category
-    return question("Do you have an ingredient you want to use or should I suggest a random one recipe?").\
+    return question("Do you have an ingredient you want to use or should I suggest a random one recipe?"). \
         reprompt("Do you have an ingredient you want to use or should I suggest a random one recipe?")
 
 """
     list = getRecipeByCategory(category)
     random_id = randint(0, len(list)-1)
+    question("The name of the selected recipe is " + recipe_name + " and its ingredients are " + ingr + ". Do you want to continu")."""
+
+
+@ask.intent('StateIngrIntent', mapping={'ingredient': 'food'})
+def get_ingr(ingredient):
+    session.attributes['ingrs'].append({ingredient})
+    if len(session.attributes['ingrs']) == 3:
+        return statement("")recipe_intro()
+    return question("Do you have another ingredient you want to use?"). \
+        reprompt("Do you have another ingredient you want to use?")
+
+
+"""
     recipe = list[random_id]
     recipe_name = recipe["name"]
     recipe_ingr = recipe["ingredients"]
@@ -42,21 +64,25 @@ def getCategory(category):
 
 
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
-@ask.intent('StateIngrIntent')
+@ask.intent('StateIngrIntent', mapping={'ingredient': 'Ingredients'})
+
 
 
 @ask.intent('SpecificIntent')
 def specific():
     specQ = "Can you tell me the name of the recipe?"
     return question(specQ).reprompt(specQ)
-# We should have something to handle the case where the name of a recipe is said by the user but the recipe is not stored in Just Cook It
 
-# For this intent we need the AMAZON.NUMBER in the intent list on amazon developer. Similar to what we did for hello python app
-@ask.intent('SpecificNameIntent', mapping={'name': 'name'})
-def specificRecipe(name):
-    # session.attributes['name'] = name
-    return statement("You asked me about " + name + "Here are the ingredients you need " + )
-# how do we filter out of our json file just the recipe that the user said the name of and how we can get its ingredients?
+
+@ask.intent('SpecificNameIntent', mapping={'recipe': 'recipe'})
+def specificRecipe(recipe):
+    # Handling the case where the name of the recipe being said by the user is not stored in the file used by the app.
+    if (getRecipeByName(recipe) == None):
+        return statement("Sorry, the recipe " + recipe + " is not one of those available")
+    else:
+        ingr = getIngredientsByRecipe(recipe)
+        recipeIntro = "The ingredients for " + recipe + " are: " + ingr + ". Do you want to continue or look for another recipe?"
+        return question(recipeIntro).reprompt("Do you want to hear the ingredients again?")
 
 
 @ask.intent('AMAZON.NoIntent')
