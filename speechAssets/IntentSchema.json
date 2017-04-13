@@ -8,7 +8,7 @@
       "slots": [
         {
           "name": "Category",
-          "type": "LIST_CATEGORIES_DISHES"
+          "type": "LIST_DISHES_CATEGORIES"
         }
       ]
     },
@@ -32,7 +32,7 @@
       "slots": [
         {
           "name": "Name",
-          "type": "AMAZON.Literal"
+          "type": "AMAZON.LITERAL"
         }
       ]
     },
@@ -44,7 +44,7 @@
       "slots": [
         {
           "name": "Recipe",
-          "type": "AMAZON.Literal"
+          "type": "AMAZON.LITERAL"
         }
       ]
     },
