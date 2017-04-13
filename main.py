@@ -6,7 +6,6 @@ from Recipe import *
 from flask import Flask, render_template
 from flask_ask import Ask, request, session, question, statement
 
-
 app = Flask(__name__)
 ask = Ask(app, "/")
 logging.getLogger('flask_ask').setLevel(logging.DEBUG)
@@ -32,8 +31,9 @@ def recommendation():
     return question("What kind of dish do you want to make?").\
         reprompt("Sorry, I didn't get what kind of dish you want to make, could you repeat?")
 
+
 @ask.intent('CategoryIntent', mapping={'category': 'Category'})
-def getCategory(category):
+def get_category(category):
     session.attributes['category'] = category
     session.attributes['state'] = 'category'
     cat = "Do you have an ingredient you want to use or should I suggest a random one recipe?"
@@ -43,13 +43,26 @@ def getCategory(category):
 """
     list = getRecipeByCategory(category)
     random_id = randint(0, len(list)-1)
+    question("The name of the selected recipe is " + recipe_name + " and its ingredients are " + ingr + ". Do you want to continu")."""
+
+
+@ask.intent('StateIngrIntent', mapping={'ingredient': 'food'})
+def get_ingr(ingredient):
+    session.attributes['ingrs'].append({ingredient})
+    if len(session.attributes['ingrs']) == 3:
+        return statement("")recipe_intro()
+    return question("Do you have another ingredient you want to use?"). \
+        reprompt("Do you have another ingredient you want to use?")
+
+
+"""
     recipe = list[random_id]
     recipe_name = recipe["name"]
     recipe_ingr = recipe["ingredients"]
     ingr = ''
     for ingredient in recipe_ingr:
         ingr = ingr + ingredient + " "
-    question("The name of the selected recipe is " + recipe_name + " and its ingredients are " + ingr + ". Do you want to continue?")."""
+    question("The name of the selected recipe is " + recipe_name + " and its ingredients are " + ingr + ". Do you want to continu")."""
 
 
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
