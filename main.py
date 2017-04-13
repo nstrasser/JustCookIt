@@ -1,12 +1,9 @@
 import logging
 from random import randint
-import requests
 from Recipe import *
 
 from flask import Flask, render_template
 from flask_ask import Ask, request, session, question, statement
-
-from collections import deque
 
 app = Flask(__name__)
 ask = Ask(app, "/")
@@ -58,8 +55,8 @@ def recommendation():
 def get_category(category):
     session.attributes['category'] = category
     session.attributes['state'] = 'category'
-    cat = "Do you have an ingredient you want to use or should I suggest a random one recipe?"
-    return question(cat).\
+    cat = "What ingredient do you want to use or should I suggest a random recipe?"
+    return question(cat). \
         reprompt(cat)
 
 
@@ -73,6 +70,7 @@ def get_random():
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
 @ask.intent('StateIngrIntent', mapping={'ingredient': 'food'})
 def get_ingr(ingredient):
+    session.attributes['state'] = 'ingredient'
     session.attributes['ingrs'].append({ingredient})
     if len(session.attributes['ingrs']) == 3:
         filteredList = get_recipe_by_ingrs()
@@ -150,7 +148,9 @@ def nextStep(recipe):
 
 
 @ask.intent('AMAZON.NoIntent')
-
+def no():
+    state = session.attributes['state']
+    if state == 'ingredient':
 
 @ask.intent('AMAZON.YesIntent')
 
