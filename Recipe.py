@@ -41,7 +41,13 @@ def getRecipeByIngredient(ingredient, listOfRecipes):
 #print(getRecipeByName("banana bread"))
 
 # Test getRecipeByCategory
-#print(getRecipeByCategory("main"))
+list_recipes = getRecipeByCategory("main")
+recipe = list_recipes[0]
+x = recipe["name"]
+ingr = ''
+for ingredient in x:
+    ingr = ingr + ingredient + " "
+print(str(x))
 
 # Test getRecipeByIngredient
 #matches = getRecipeByIngredient("pasta", recipes)

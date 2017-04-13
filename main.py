@@ -34,12 +34,12 @@ def getStepsOfRecipe(recipe):
 # function to get the title and the ingredients of the recipe.
 # Used in RandomIntent and StateIngrIntent
 def get_intro(recipe):
-    recipe_ingr = recipe["ingredients"]
+    recipe_ingr = recipe['ingredients']
     recipe_name = recipe['name']
     ingr = ''
     for ingredient in recipe_ingr:
         ingr = ingr + ingredient + " "
-    return "The name of this recipe is " + str(recipe_name) + " . Its ingredients are " + ingr;
+    return "The name of this recipe is " + str(recipe_name) + " . Its ingredients are " + ingr
 
 
 @ask.launch
@@ -71,10 +71,10 @@ def get_category(category):
 def get_random():
     list_recipes = getRecipeByCategory(session.attributes['category'])
     random_id = randint(0, len(list_recipes) - 1)
-    recipe = list_recipes[random_id]
-    session.attributes['recipe'] = recipe
-    question(get_intro(recipe) + "Do you want to continue with this recipe or hear another one?"). \
-        reprompt("Do you want to continue with the recipe for " + recipe['name'] + " or do you want to hear another one?")
+    recipe1 = list_recipes[random_id]
+    session.attributes['recipe'] = recipe1
+    question(get_intro(recipe1) + "Do you want to continue with this recipe or hear another one?"). \
+        reprompt("Do you want to continue with the recipe for " + str(recipe1['name']) + " or do you want to hear another one?")
 
 
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
@@ -109,7 +109,7 @@ def specific():
     return question(specQ).reprompt(specQ)
 
 # Alexa tells the ingredient needed for the recipe and ask if the user wants to continue with it or choose another one
-@ask.intent('SpecificNameIntent', mapping={'recipe': 'name'})
+@ask.intent('SpecificNameIntent', mapping={'recipe': 'Name'})
 def specificRecipe(recipe):
     session.attributes['state'] = 'recipeIngredients'
     # Handling the case where the name of the recipe being said by the user is not stored in the file used by the app.
@@ -244,7 +244,8 @@ def cancel():
 def session_ended():
     return "", 200
 
-
 # this final statement is required to run the app defined above
 if __name__ == '__main__':
     app.run(debug=True)
+
+
