@@ -19,7 +19,7 @@
       "intent": "StateIngrIntent",
       "slots": [
         {
-          "name": "Food",
+          "name": "Ingredient",
           "type": "AMAZON.Food"
         }
       ]
