@@ -11,6 +11,15 @@ app = Flask(__name__)
 ask = Ask(app, "/")
 logging.getLogger('flask_ask').setLevel(logging.DEBUG)
 
+
+def getIngredientsByRecipe(recipe):
+    recipeDescription = getRecipeByName(recipe)
+    recipe_ingr = recipeDescription["ingredients"]
+    ingr = ''
+    for ingredient in recipe_ingr:
+        ingr = ingr + ingredient + " "
+    return ingr
+
 @ask.launch
 def launch():
     return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?").\
@@ -58,12 +67,9 @@ def specificRecipe(recipe):
     if (getRecipeByName(recipe) == None):
         return statement("Sorry, the recipe " + recipe + " is not one of those available")
     else:
-        recipeDescription = getRecipeByName(recipe)
-        recipe_ingr = recipeDescription["ingredients"]
-        ingr = ''
-        for ingredient in recipe_ingr:
-            ingr = ingr + ingredient + " "
-        return question("You asked me about " + recipe + ". Here are the ingredients you need " + ingr + ". Do you want to continue or look for another recipe?")
+        ingr = getIngredientsByRecipe(recipe)
+        recipeIntro = "The ingredients for " + recipe + " are: " + ingr + ". Do you want to continue or look for another recipe?"
+        return question(recipeIntro).reprompt("Do you want to hear the ingredients again?")
 
 
 @ask.intent('AMAZON.NoIntent')
