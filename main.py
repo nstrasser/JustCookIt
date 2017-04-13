@@ -111,8 +111,8 @@ def specificRecipe(recipe):
 @ask.intent('CheckIntent')
 def check():
     session.attributes['state'] = 'checkIngredients'
-    checkIngredients = "Do you have all the ingredients that you need for this recipe?"
-    return question(checkIngredients).reprompt(checkIngredients)
+    check_ingredients = "Do you have all the ingredients that you need for this recipe?"
+    return question(check_ingredients).reprompt(check_ingredients)
 
 
 @ask.intent('StepsIntent', mapping={'recipe': 'recipe'})
@@ -152,7 +152,16 @@ def no():
     if state == 'ingredient':
 
 @ask.intent('AMAZON.YesIntent')
-
+def yes():
+    if (session.attributes['state'] == 'checkIngredients'):
+        recipe = session.attributes['recipe']
+        return nextStep(recipe)
+    elif (session.attributes['state'] == 'steps'):
+        recipe = session.attributes['recipe']
+        return nextStep(recipe)
+    else:
+        yes_wrong = "Sorry, I am not sure what are you saying yes for. Can I help you with anything?"
+        return question(yes_wrong).reprompt(yes_wrong)
 
 
 @ask.intent('AMAZON.NextIntent')
