@@ -4,6 +4,9 @@
       "intent": "RecommendationIntent"
     },
     {
+      "intent": "RandomIntent"
+    },
+    {
       "intent": "CategoryIntent",
       "slots": [
         {
@@ -13,10 +16,10 @@
       ]
     },
     {
-      "intent": "AddIngredientIntent",
+      "intent": "StateIngrIntent",
       "slots": [
         {
-          "name": "Ingredient",
+          "name": "food",
           "type": "AMAZON.Food"
         }
       ]

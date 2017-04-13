@@ -31,6 +31,16 @@ def getStepsOfRecipe(recipe):
     # steps = deque(steps)
     return steps
 
+
+def get_intro(recipe):
+    recipe_ingr = recipe["ingredients"]
+    recipe_name = recipe['name']
+    ingr = ''
+    for ingredient in recipe_ingr:
+        ingr = ingr + ingredient + " "
+    return "The name of this recipe is " + str(recipe_name) + " . Its ingredients are " + ingr;
+
+
 @ask.launch
 def launch():
     return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?").\
@@ -52,30 +62,34 @@ def get_category(category):
     return question(cat).\
         reprompt(cat)
 
-"""
-    list = getRecipeByCategory(category)
-    random_id = randint(0, len(list)-1)
-    question("The name of the selected recipe is " + recipe_name + " and its ingredients are " + ingr + ". Do you want to continu")."""
+
+@ask.intent('RandomIntent')
+def get_random():
+    list = getRecipeByCategory(session.attributes['category'])
+    random_id = randint(0, len(list) - 1)
+    question(get_intro(list[random_id]) + "Do you want to continue with this recipe or hear another one?"). \
+        reprompt("Do you want to continue with this" + list[random_id]['name'] + " recipe or hear another one?")
 
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
 @ask.intent('StateIngrIntent', mapping={'ingredient': 'food'})
 def get_ingr(ingredient):
     session.attributes['ingrs'].append({ingredient})
     if len(session.attributes['ingrs']) == 3:
-        return statement("")recipe_intro()
-    return question("Do you have another ingredient you want to use?"). \
-        reprompt("Do you have another ingredient you want to use?")
+        filteredList = get_recipe_by_ingrs()
+        randomId = randint(0, len(filteredList) - 1)
+        random_recipe = filteredList[randomId]
+        return question(get_intro(random_recipe) + "Do you want to continue with this recipe?"). \
+            reprompt("Do you want to continue with " + str(random_recipe['name']))
+    return question("What else?"). \
+        reprompt("Please tell me an ingredient?")
 
 
-"""
-    recipe = list[random_id]
-    recipe_name = recipe["name"]
-    recipe_ingr = recipe["ingredients"]
-    ingr = ''
-    for ingredient in recipe_ingr:
-        ingr = ingr + ingredient + " "
-    question("The name of the selected recipe is " + recipe_name + " and its ingredients are " + ingr + ". Do you want to continu")."""
-
+def get_recipe_by_ingrs():
+    list_ingrs = session.attributes["ingrs"]
+    filteredlist = None
+    for ingr in list_ingrs:
+        filteredlist = getRecipeByIngredient(ingr, filteredlist)
+    return filteredlist
 
 
 @ask.intent('SpecificIntent')
@@ -138,7 +152,6 @@ def nextStep(recipe):
 @ask.intent('AMAZON.NoIntent')
 
 
-
 @ask.intent('AMAZON.YesIntent')
 
 
@@ -163,61 +176,6 @@ def stop():
 def cancel():
     return stop()
 
-
-
-"""
-@ask.intent('HelloWorldIntent')
-def hello_world():
-    return statement("Where is Ham Ham?")
-
-
-@ask.intent('AMAZON.HelpIntent')
-def help():
-    help_text = "Ask me to say Hi, dude."
-    return question(help_text).reprompt(help_text)
-# If no response ask again, if second time there is yet no response, end session
-
-
-
-@ask.intent('AMAZON.StopIntent')
-def stop():
-    bye_text = "Hasta la vista"
-    return statement(bye_text)
-
-
-@ask.intent('AMAZON.CancelIntent')
-def cancel():
-    return stop()
-
-
-@ask.intent('NumIntent', mapping={'number': 'number'})
-def number_intent(number):
-    session.attributes['number'] = number
-    link = 'http://numbersapi.com/' + number
-    num_response = requests.get(link)
-    return question("The fact is " + num_response.text).reprompt("Ask me more about numbers, dude.")
-
-
-@ask.intent('WhatNumIntent')
-def what_num():
-    number = session.attributes['number']
-    return statement("You asked me about " + str(number))
-
-
-@ask.intent('ItalyIntent')
-def italy():
-    italy_text = "Why are you in Scotland when it is sunny in Italy?"
-    return statement(italy_text)
-
-
-@ask.intent('GetItalianFactIntent')
-def get_it_fact():
-    num_facts = 13  # increment this when adding a new fact template
-    fact_index = randint(0, num_facts-1)
-    fact_text = render_template('italy_fact_{}'.format(fact_index))
-    card_title = render_template('card_title')
-    return statement(fact_text).simple_card(card_title, fact_text)
-"""
 
 @ask.session_ended
 def session_ended():
