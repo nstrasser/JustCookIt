@@ -18,6 +18,7 @@ def getIngredientsByRecipe(recipe):
         ingr = ingr + ingredient + " "
     return ingr
 
+
 def getStepsOfRecipe(recipe):
     recipe_description = getRecipeByName(recipe)
     recipe_steps = recipe_description["method"]
@@ -25,6 +26,7 @@ def getStepsOfRecipe(recipe):
     recipe_steps_str = recipe_steps[0]
     # Split
     steps = recipe_steps_str.split(". ")
+    # steps = deque(steps)
     return steps
 
 
@@ -39,14 +41,14 @@ def get_intro(recipe):
 
 @ask.launch
 def launch():
-    return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?").\
+    return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?"). \
         reprompt("Can I suggest you any recipe?")
 
 
 @ask.intent('RecommendationIntent')
 def recommendation():
     session.attributes['state'] = 'recommendation'
-    return question("What kind of dish do you want to make?").\
+    return question("What kind of dish do you want to make?"). \
         reprompt("Sorry, I didn't get what kind of dish you want to make, could you repeat?")
 
 
@@ -68,13 +70,14 @@ def get_random():
     question(get_intro(recipe) + "Do you want to continue with this recipe or hear another one?"). \
         reprompt("Do you want to continue with the recipe for " + list_recipes[random_id]['name'] + " or do you want to hear another one?")
 
+
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
 @ask.intent('StateIngrIntent', mapping={'ingredient': 'food'})
 def get_ingr(ingredient):
     session.attributes['state'] = 'ingredient'
     session.attributes['ingrs'].append({ingredient})
     if len(session.attributes['ingrs']) == 3:
-        filteredList = get_recipe_by_ingrs()
+        filteredList = get_recipes_by_ingrs()
         randomId = randint(0, len(filteredList) - 1)
         random_recipe = filteredList[randomId]
         session.attributes['recipe'] = random_recipe
@@ -84,7 +87,7 @@ def get_ingr(ingredient):
         reprompt("Please tell me an ingredient?")
 
 
-def get_recipe_by_ingrs():
+def get_recipes_by_ingrs():
     list_ingrs = session.attributes["ingrs"]
     filteredlist = None
     for ingr in list_ingrs:
@@ -99,7 +102,7 @@ def specific():
     return question(specQ).reprompt(specQ)
 
 
-@ask.intent('SpecificNameIntent', mapping={'recipe': 'recipe'})
+@ask.intent('SpecificNameIntent', mapping={'recipe': 'name'})
 def specificRecipe(recipe):
     session.attributes['state'] = 'recipeIngredients'
     # Handling the case where the name of the recipe being said by the user is not stored in the file used by the app.
@@ -128,7 +131,8 @@ def nextStep(recipe):
         session.attributes['recipeSteps'] = steps
         session.attributes['state'] = 'steps'
         session.attributes['stepNum'] = count
-        return question("Do this: " + step + ". Are you ready for the next step?").reprompt("Are you ready for the next step?")
+        return question("Do this: " + step + ". Are you ready for the next step?").reprompt(
+            "Are you ready for the next step?")
 
     elif (session.attributes['state'] == 'steps' and len(session.attributes['recipeSteps']) != 0):
         steps = session.attributes['recipeSteps']
@@ -136,10 +140,11 @@ def nextStep(recipe):
         step = steps[count]
         session.attributes['recipeSteps'] = steps
         session.attributes['state'] = 'steps'
-        return question("Now do this: " + step + ". Are you ready for the next step?").reprompt("Are you ready for the next step?")
+        return question("Now do this: " + step + ". Are you ready for the next step?").reprompt(
+            "Are you ready for the next step?")
 
     elif (session.attributes['state'] == 'steps' and len(session.attributes['recipeSteps']) == 0):
-        return statement("You are done! Your food look delicious") # or should we return stop() ????
+        return statement("You are done! Your food look delicious")  # or should we return stop() ????
 
     else:
         # Handle the case in which the Steps intent is not activated in the possible correct states
@@ -147,12 +152,29 @@ def nextStep(recipe):
         return question(not_steps).reprompt(not_steps)
 
 
-
-
 @ask.intent('AMAZON.NoIntent')
 def no():
     state = session.attributes['state']
     if state == 'ingredient':
+        recipeList = get_recipes_by_ingrs()
+        randomId = randint(0, len(recipeList) - 1)
+        recipe = recipeList[randomId]
+        return question(get_intro(recipe) + "Do you want to continue with this recipe?"). \
+            reprompt("Do you want to continue with " + str(recipe['name']))
+    elif state == 'checkIngredients':
+        if session.attributes['ingrs'] != None:
+            return get_random()
+        else:
+            recipeList = get_recipes_by_ingrs()
+            randomId = randint(0, len(recipeList) - 1)
+            recipe = recipeList[randomId]
+            return question(get_intro(recipe) + "Do you want to continue with this recipe?"). \
+                reprompt("Do you want to continue with " + str(recipe['name']))
+    elif state == 'steps':
+        return nextStep()
+    else:
+        return question("I can't help you. Try again!")
+
 
 @ask.intent('AMAZON.YesIntent')
 def yes():

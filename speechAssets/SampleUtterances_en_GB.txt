@@ -2,13 +2,12 @@ RecommendationIntent I am looking for a recommendation
 RecommendationIntent Suggest me something
 RecommendationIntent Please suggest me something
 RecommendationIntent Give me a recommendation
-RecommendationIntent I have a specific one
-RecommendationIntent I would like to go back to one specific recipe
-RecommendationIntent I am looking for a specific recipe
 
 CategoryIntent I would like a {Category}
 CategoryIntent Suggest me a {Category}
 CategoryIntent I am looking for a {Category}
+CategoryIntent {Category}, please
+CategoryIntent {Category}
 
 StateIngrIntent I would like to add {Ingredient}
 StateIngrIntent The meal should include {Ingredient}
@@ -18,15 +17,18 @@ StateIngrIntent I would like to use {Ingredient}
 
 SpecificIntent I am looking for a specific one
 SpecificIntent I am looking for a specific recipe
+SpecificIntent I have a specific one
+SpecificIntent I would like to go back to one specific recipe
+SpecificIntent I am looking for a specific recipe
 
 
-SpecificNameIntent The name of the recipe is {Spaghetti Bolognese | name}
-SpecificNameIntent The name of the recipe is {Sweet Potato | name}
-SpecificNameIntent The name of the recipe is {Chicken | name}
-SpecificNameIntent The name of the recipe is {Leek Risotto | name}
-SpecificNameIntent The name of the recipe is {Simple Fish Stew | name}
+SpecificNameIntent The name of the recipe is {Spaghetti Bolognese | Name}
+SpecificNameIntent The name of the recipe is {Sweet Potato | Name}
+SpecificNameIntent The name of the recipe is {Chicken | Name}
+SpecificNameIntent The name of the recipe is {Leek Risotto | Name}
+SpecificNameIntent The name of the recipe is {Simple Fish Stew | Name}
 SpecificNameIntent The name of the recipe is {Courgette, Breadcrumb and Almond Pasta | name}
-SpecificNameIntent The name of the recipe is {Some very very long recipe name | name}
+SpecificNameIntent The name of the recipe is {Some very very long recipe name | Name}
 
 
 RandomIntent Suggest me a random recipe
