@@ -63,7 +63,9 @@ def get_category(category):
 def get_random():
     list_recipes = getRecipeByCategory(session.attributes['category'])
     random_id = randint(0, len(list_recipes) - 1)
-    question(get_intro(list_recipes[random_id]) + "Do you want to continue with this recipe or hear another one?"). \
+    recipe = list_recipes[random_id]
+    session.attributes['recipe'] = recipe
+    question(get_intro(recipe) + "Do you want to continue with this recipe or hear another one?"). \
         reprompt("Do you want to continue with the recipe for " + list_recipes[random_id]['name'] + " or do you want to hear another one?")
 
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
@@ -75,6 +77,7 @@ def get_ingr(ingredient):
         filteredList = get_recipe_by_ingrs()
         randomId = randint(0, len(filteredList) - 1)
         random_recipe = filteredList[randomId]
+        session.attributes['recipe'] = random_recipe
         return question(get_intro(random_recipe) + "Do you want to continue with this recipe?"). \
             reprompt("Do you want to continue with " + str(random_recipe['name']))
     return question("What else?"). \
@@ -103,6 +106,7 @@ def specificRecipe(recipe):
     if (getRecipeByName(recipe) == None):
         return statement("Sorry, the recipe " + recipe + " is not one of those available")
     else:
+        session.attributes['recipe'] = recipe
         ingr = getIngredientsByRecipe(recipe)
         recipeIntro = "The ingredients for " + recipe + " are: " + ingr + ". Do you want to continue or look for another recipe?"
         return question(recipeIntro).reprompt("Do you want to hear the ingredients again?")
@@ -115,7 +119,7 @@ def check():
     return question(check_ingredients).reprompt(check_ingredients)
 
 
-@ask.intent('StepsIntent', mapping={'recipe': 'recipe'})
+@ask.intent('StepsIntent')
 def nextStep(recipe):
     if (session.attributes['state'] == 'checkIngredients'):
         steps = getStepsOfRecipe(recipe)
@@ -123,7 +127,6 @@ def nextStep(recipe):
         step = steps[count]
         session.attributes['recipeSteps'] = steps
         session.attributes['state'] = 'steps'
-        count = count+1
         session.attributes['stepNum'] = count
         return question("Do this: " + step + ". Are you ready for the next step?").reprompt("Are you ready for the next step?")
 
@@ -157,6 +160,9 @@ def yes():
         recipe = session.attributes['recipe']
         return nextStep(recipe)
     elif (session.attributes['state'] == 'steps'):
+        count = session.attributes['stepNum']
+        count = count + 1
+        session.attributes['stepNum'] = count
         recipe = session.attributes['recipe']
         return nextStep(recipe)
     else:
