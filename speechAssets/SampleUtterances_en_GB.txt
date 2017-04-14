@@ -13,6 +13,7 @@ StateIngrIntent I would like to add {Ingredient}
 StateIngrIntent The meal should include {Ingredient}
 StateIngrIntent The recipe should include {Ingredient}
 StateIngrIntent I would like to use {Ingredient}
+StateIngrIntent I want to use {Ingredient}
 
 
 SpecificIntent I am looking for a specific one
@@ -23,7 +24,7 @@ SpecificIntent I am looking for a specific recipe
 
 
 SpecificNameIntent The name of the recipe is {Spaghetti Bolognese | Name}
-SpecificNameIntent The name of the recipe is {Sweet Potato | Name}
+SpecificNameIntent The name of the recipe is {Scotch Pancakes | Name}
 SpecificNameIntent The name of the recipe is {Chicken | Name}
 SpecificNameIntent The name of the recipe is {Leek Risotto | Name}
 SpecificNameIntent The name of the recipe is {Simple Fish Stew | Name}
@@ -39,4 +40,6 @@ RandomIntent Suggest me something
 
 AMAZON.NextIntent look again
 AMAZON.NextIntent try another
+
+CheckIntent continue
 

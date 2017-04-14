@@ -21,8 +21,7 @@ def getIngredientsByRecipe(recipe):
 
 # function to retrieve the method to cook the recipe. The string is converted in a list of strings, each element of the
 # list is a step of the recipe
-def getStepsOfRecipe(recipe):
-    recipe_description = getRecipeByName(recipe)
+def getStepsOfRecipe(recipe_description):
     recipe_steps = recipe_description["method"]
     # Get the string with the method
     recipe_steps_str = recipe_steps[0]
@@ -38,13 +37,13 @@ def get_intro(recipe):
     recipe_name = recipe['name']
     ingr = ''
     for ingredient in recipe_ingr:
-        ingr = ingr + ingredient + " "
+        ingr = ingr + ingredient + " , "
     return "The name of this recipe is " + str(recipe_name) + " . Its ingredients are " + ingr
 
 
 @ask.launch
 def launch():
-    return question("Hello, are you looking for a specific recipe or do you want me to suggest you something?"). \
+    return question("Hello, are you looking for a specific recipe, or do you want a suggestion?"). \
         reprompt("Can I suggest you any recipe?")
 
 
@@ -61,7 +60,7 @@ def recommendation():
 def get_category(category):
     session.attributes['category'] = category
     session.attributes['state'] = 'category'
-    cat = "What ingredient do you want to use or should I suggest a random recipe?"
+    cat = "Do you have a specific ingredient , or should I suggest a random recipe?"
     return question(cat). \
         reprompt(cat)
 
@@ -69,38 +68,55 @@ def get_category(category):
 # with that one or hear another one.
 @ask.intent('RandomIntent')
 def get_random():
+    recipe1 = get_random_regular()
+    # print(get_intro(recipe1) + "Do you want to continue with this recipe or hear another one?")
+    return question("Try this: " + get_intro(recipe1) + ". Do you want to continue with this recipe or hear another one?"). \
+        reprompt("Do you want to continue with the recipe for " + str(recipe1['name']) + " or do you want to hear another one?")
+
+
+def get_random_regular():
     list_recipes = getRecipeByCategory(session.attributes['category'])
     random_id = randint(0, len(list_recipes) - 1)
     recipe1 = list_recipes[random_id]
     session.attributes['recipe'] = recipe1
-    # print(get_intro(recipe1) + "Do you want to continue with this recipe or hear another one?")
-    return question(get_intro(recipe1) + "Do you want to continue with this recipe or hear another one?"). \
-        reprompt("Do you want to continue with the recipe for " + str(recipe1['name']) + " or do you want to hear another one?")
+    return recipe1
 
 
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
 @ask.intent('StateIngrIntent', mapping={'ingredient': 'Ingredient'})
 def get_ingr(ingredient):
     session.attributes['state'] = 'ingredient'
-    # print(ingredient)
-    print (len(session.attributes))
+    print("ingredient said is: " + ingredient)
+    print ("the number of elements of session attributes is " + str(len(session.attributes)))
 
-    if len(session.attributes) == 2:
+    """if len(session.attributes) == 2:
         ingred = []
         ingred.append(ingredient)
         session.attributes['ingrs'] = ingred
-
+        print("The ingred list is: " + str(ingred))
+    else:
+        session.attributes['ingrs'].append(ingredient)
     # session.attributes['ingrs'].append(ingredient)
-    elif len(session.attributes) == 3:
+    if len(session.attributes['ingrs']) == 3:
         filteredList = get_recipes_by_ingrs()
+        print("The filteredList is: " + str(filteredList))
         randomId = randint(0, len(filteredList) - 1)
         random_recipe = filteredList[randomId]
         session.attributes['recipe'] = random_recipe
         return question(get_intro(random_recipe) + "Do you want to continue with this recipe?"). \
             reprompt("Do you want to continue with " + str(random_recipe['name']))
     return question("What else?"). \
-        reprompt("Please tell me an ingredient?")
+        reprompt("Please tell me an ingredient?")"""
 
+    session.attributes['ingr'] = ingredient
+    filteredList = getRecipeByIngredient(ingredient, getRecipeByCategory(session.attributes['category']))
+    if filteredList is None:
+        return statement("Sorry, I could not find any recipe with that ingredient.")
+    randomId = randint(0, len(filteredList) - 1)
+    random_recipe = filteredList[randomId]
+    session.attributes['recipe'] = random_recipe
+    return question(get_intro(random_recipe) + "Do you want to continue with this recipe?"). \
+        reprompt("Do you want to continue with " + str(random_recipe['name']))
 
 # function to retrieve recipes with the ingredients listed by the user
 def get_recipes_by_ingrs():
@@ -125,9 +141,9 @@ def specificRecipe(recipe):
     session.attributes['state'] = 'recipeIngredients'
     # Handling the case where the name of the recipe being said by the user is not stored in the file used by the app.
     if (getRecipeByName(recipe) == None):
-        return statement("Sorry, the recipe " + recipe + " is not one of those available")
+        return statement("Sorry, the recipe is not one of those available")
     else:
-        session.attributes['recipe'] = recipe
+        session.attributes['recipe'] = getRecipeByName(recipe)
         ingr = getIngredientsByRecipe(recipe)
         recipeIntro = "The ingredients for " + recipe + " are: " + ingr + ". Do you want to continue or look for another recipe?"
         return question(recipeIntro).reprompt("Do you want to hear the ingredients again?")
@@ -152,22 +168,22 @@ def nextStep():
         session.attributes['recipeSteps'] = steps
         session.attributes['state'] = 'steps'
         session.attributes['stepNum'] = count
-        return question("Do this: " + step + ". Are you ready for the next step?").reprompt(
+        return question(step + ". Are you ready for the next step?").reprompt(
             "Are you ready for the next step?")
 
     # Case 2: Alexa has already said one or more steps but the recipe is not over yet
-    elif (session.attributes['state'] == 'steps' and len(session.attributes['recipeSteps']) != 0):
+    elif (session.attributes['state'] == 'steps' and len(session.attributes['recipeSteps']) > session.attributes['stepNum']):
         steps = session.attributes['recipeSteps']
         count = session.attributes['stepNum']
         step = steps[count]
         session.attributes['recipeSteps'] = steps
         session.attributes['state'] = 'steps'
-        return question("Now do this: " + step + ". Are you ready for the next step?").reprompt(
+        return question(step + ". Are you ready for the next step?").reprompt(
             "Are you ready for the next step?")
 
     # Case 3: The recipe has been completed and the app can be closed
-    elif (session.attributes['state'] == 'steps' and len(session.attributes['recipeSteps']) == 0):
-        return statement("You are done! Your food look delicious")  # or should we return stop() ????
+    elif (session.attributes['state'] == 'steps' and len(session.attributes['recipeSteps']) == session.attributes['stepNum']):
+        return stop()
 
     # Handle the case in which the Steps intent is not activated in the possible correct states
     else:
@@ -188,10 +204,12 @@ def no():
 
     # The user does not have all the ingredients for the recipe when asked at "CheckIntent". Alexa search for another random recipe
     elif state == 'checkIngredients':
-        if session.attributes['ingrs'] != None:
+        if session.attributes.get('category') is None:
+            return statement("Try this recipe again, once you have all the ingredients.")
+        elif session.attributes.get('ingrs') is None:
             return get_random()
         else:
-            recipeList = get_recipes_by_ingrs()
+            recipeList = getRecipeByIngredient(session.attributes['ingr'], getRecipeByCategory(session.attributes['category']))
             randomId = randint(0, len(recipeList) - 1)
             recipe = recipeList[randomId]
             return question(get_intro(recipe) + "Do you want to continue with this recipe?"). \
@@ -228,7 +246,18 @@ def yes():
 @ask.intent('AMAZON.NextIntent')
 def next_recipe():
     # Ask Alexa to suggest another recipe
-    return get_random()
+    if session.attributes.get('category') is None:
+        return launch()
+    elif session.attributes.get('ingr') is None:
+        return get_random()
+    else:
+        filteredList = getRecipeByIngredient(session.attributes['ingr'], getRecipeByCategory(session.attributes['category']))
+        print("The filteredList is: " + str(filteredList))
+        randomId = randint(0, len(filteredList) - 1)
+        random_recipe = filteredList[randomId]
+        session.attributes['recipe'] = random_recipe
+        return question(get_intro(random_recipe) + "Do you want to continue with this recipe?"). \
+            reprompt("Do you want to continue with " + str(random_recipe['name']))
 
 
 @ask.intent('AMAZON.HelpIntent')
@@ -241,14 +270,14 @@ def help_recipe():
 @ask.intent('AMAZON.StopIntent')
 def stop():
     # Close the app. Alexa will greet you.
-    bye_text = "This seemed a delicious recipe."
+    bye_text = "And now that the recipe is completed... Just eat it."
     return statement(bye_text)
 
 
 @ask.intent('AMAZON.CancelIntent')
 def cancel():
     # Close the app.
-    return stop()
+    return statement("Operation cancelled.")
 
 
 @ask.session_ended
