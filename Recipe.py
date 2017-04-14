@@ -41,17 +41,20 @@ def getRecipeByIngredient(ingredient, listOfRecipes):
 #print(getRecipeByName("banana bread"))
 
 # Test getRecipeByCategory
-list_recipes = getRecipeByCategory("main")
-recipe = list_recipes[0]
-x = recipe["name"]
-ingr = ''
-for ingredient in x:
-    ingr = ingr + ingredient + " "
-print(str(x))
+# list_recipes = getRecipeByCategory("main")
+# recipe = list_recipes[0]
+# x = recipe["name"]
+# ingr = ''
+# for ingredient in x:
+#     ingr = ingr + ingredient + " "
+# print(str(x))
 
 # Test getRecipeByIngredient
-#matches = getRecipeByIngredient("pasta", recipes)
-#matches = getRecipeByIngredient("salt", matches)       # in main - if it's the last ingredient from the user
+matches = getRecipeByIngredient("pasta", recipes)
+# matches = getRecipeByIngredient("salt", matches)       # in main - if it's the last ingredient from the user
                                                         # chose a random out of the matches-list with
                                                         # random.choice(matches) -> matches is the matches-list
-#print(random.choice(matches))
+# ingr = ''
+# for ingredient in matches:
+#     ingr = ingr + ingredient + ' '
+# print(ingr)

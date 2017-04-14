@@ -73,20 +73,25 @@ def get_random():
     random_id = randint(0, len(list_recipes) - 1)
     recipe1 = list_recipes[random_id]
     session.attributes['recipe'] = recipe1
-    question(get_intro(recipe1) + "Do you want to continue with this recipe or hear another one?"). \
+    # print(get_intro(recipe1) + "Do you want to continue with this recipe or hear another one?")
+    return question(get_intro(recipe1) + "Do you want to continue with this recipe or hear another one?"). \
         reprompt("Do you want to continue with the recipe for " + str(recipe1['name']) + " or do you want to hear another one?")
 
 
 # We want Alexa to ask to the user to state at most 3 ingredients that he wants to use.
-@ask.intent('StateIngrIntent', mapping={'ingredient': 'food'})
+@ask.intent('StateIngrIntent', mapping={'ingredient': 'Ingredient'})
 def get_ingr(ingredient):
     session.attributes['state'] = 'ingredient'
-    #if session.attributes['ingrs'] == None:
-    ingred = []
-    session.attributes['ingrs'] = ingred
+    # print(ingredient)
+    print (len(session.attributes))
 
-    session.attributes['ingrs'].append(ingredient)
-    if len(session.attributes['ingrs']) == 3:
+    if len(session.attributes) == 2:
+        ingred = []
+        ingred.append(ingredient)
+        session.attributes['ingrs'] = ingred
+
+    # session.attributes['ingrs'].append(ingredient)
+    elif len(session.attributes) == 3:
         filteredList = get_recipes_by_ingrs()
         randomId = randint(0, len(filteredList) - 1)
         random_recipe = filteredList[randomId]
@@ -100,10 +105,12 @@ def get_ingr(ingredient):
 # function to retrieve recipes with the ingredients listed by the user
 def get_recipes_by_ingrs():
     list_ingrs = session.attributes["ingrs"]
-    filteredlist = None
+    filteredlist = []
     for ingr in list_ingrs:
         filteredlist = getRecipeByIngredient(ingr, filteredlist)
+    print filteredlist
     return filteredlist
+
 
 # Alexa prompt the user to tell her the name of a specific recipe he wants to cook
 @ask.intent('SpecificIntent')
